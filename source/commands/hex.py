@@ -1,0 +1,2 @@
+async def on_command(self, message):
+	await message.channel.send(f"{message.author.mention}, you can get your Steam hex from: <http://www.vacbanned.com>\nEnter your profile in the search bar and copy the part where it says `(Hex)` under `Steam3 ID (64bit)`")
