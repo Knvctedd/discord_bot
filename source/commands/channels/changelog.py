@@ -7,7 +7,8 @@ async def on_admin_command(self, message):
 	channel = discord.utils.get(message.guild.text_channels, name="change-log")
 	embed = discord.Embed(title=get_timestamp(), description=change_text, colour=discord.Colour.blue())
 	
-	await channel.send(embed=embed)
+	msg = await channel.send(embed=embed)
+	await msg.publish()
 
 def get_timestamp():
 	date = datetime.datetime.now()
