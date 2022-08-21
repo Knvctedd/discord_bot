@@ -14,7 +14,7 @@ async def on_admin_command(self, message):
 
 	await message.delete()
 
-	utils.db.cur.execute("SELECT identifier, discord, first_joined, last_played FROM users WHERE `priority` >= -127 AND `discord` IS NOT NULL")
+	utils.db.cur.execute("SELECT steam, discord, first_joined, last_played FROM users WHERE `priority` >= -127 AND `discord` IS NOT NULL")
 	total = 0
 	totalLeft = 0
 	totalLeftRecent = 0
@@ -22,9 +22,9 @@ async def on_admin_command(self, message):
 
 	print("To remove from whitelist:")
 
-	for (identifier, _discord, first_joined, last_played) in utils.db.cur:
+	for (steam, _discord, first_joined, last_played) in utils.db.cur:
 		total += 1
-		user_id = int(_discord[8:len(_discord)])
+		user_id = int(_discord)
 
 		if channel.guild.get_member(user_id) is None:
 			# await channel.send(f"<@{user_id}>")
@@ -32,8 +32,8 @@ async def on_admin_command(self, message):
 				totalNeverJoined += 1
 			elif last_played is not None and last_played.timestamp() * 1000 > int(round(time.time() * 1000)) - 1000 * 60 * 60 * 24 * 7:
 				totalLeftRecent += 1
-			print(f"{identifier}, {_discord}")
-			query_queue.append(f"UPDATE `users` SET `priority`=-128 WHERE `identifier`='{identifier}' AND `discord`='{_discord}'")
+			print(f"steam:{steam}, discord:{_discord}")
+			query_queue.append(f"UPDATE `users` SET `priority`=-128 WHERE `steam`='{steam}' AND `discord`='{_discord}'")
 			totalLeft += 1
 	
 	embed = discord.Embed(title="")
