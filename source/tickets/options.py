@@ -66,7 +66,7 @@ options = [
 		"emoji": "🤷",
 		"title": "Issue",
 		"ticket_name": "issue",
-		"description": "What problem are you having?\n\nPlease keep in mind that tickets are not meant for bug reports (https://nonstoprp.net/index.php?forums/bug-reports.137/)."
+		"description": "What problem are you having?\n\nPlease keep in mind that tickets are not meant for bug reports (https://nonstoprp.net/index.php?forums/ooc-bug-reports.526/)."
 	},
 	{
 		"emoji": "📣",

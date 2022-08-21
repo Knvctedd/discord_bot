@@ -12,12 +12,12 @@ async def on_admin_command(self, message):
 	
 	selects = "id, discord"
 
-	if not await utils.db.dev_get_target(message.mentions, args[1], message, selects):
+	if not await utils.db.get_target(message.mentions, args[1], message, selects):
 		return
 	
 	await message.delete()
 
-	result = utils.db.dev_cur.fetchone()
+	result = utils.db.cur.fetchone()
 	user_id = None
 	user = None
 
@@ -27,13 +27,13 @@ async def on_admin_command(self, message):
 		user_id = result[0]
 		user = result[1]
 
-	utils.db.dev_cur.execute("SELECT id, user_id, first_name, last_name, dob, gender, bank, time_played, dead FROM characters WHERE user_id=?", (user_id,))
+	utils.db.cur.execute("SELECT id, user_id, first_name, last_name, dob, gender, bank, time_played, dead FROM characters WHERE user_id=?", (user_id,))
 
 	embed = discord.Embed(title=f"Characters (User {user_id})", description="", colour=discord.Colour.green())
 
 	total_time_played = 0.0
 
-	for (character_id, user_id, first_name, last_name, dob, gender, bank, time_played, dead) in utils.db.dev_cur:
+	for (character_id, user_id, first_name, last_name, dob, gender, bank, time_played, dead) in utils.db.cur:
 		# user_mention = None
 		# if user is None:
 		# 	user_mention = "*Unknown*"
@@ -53,6 +53,6 @@ async def on_admin_command(self, message):
 
 		embed.add_field(name=f"{first_name} {last_name} ({character_id})", value=value)
 	
-	embed.description = f"<@!{user[8:len(user)]}>\n\nTime Played: {math.floor(total_time_played / 3600)} hours"
+	embed.description = f"<@!{user}>\n\nTime Played: {math.floor(total_time_played / 3600)} hours"
 	
 	await channel.send(embed=embed)

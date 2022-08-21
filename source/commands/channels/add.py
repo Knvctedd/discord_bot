@@ -11,7 +11,7 @@ async def on_admin_command(self, message):
 
 	for (user,) in utils.db.cur:
 		if user is not None:
-			target = channel.guild.get_member(int(user[8:len(user)]))
+			target = channel.guild.get_member(int(user))
 
 	if target is None:
 		await channel.send(f"User not found, {message.author.mention}!")

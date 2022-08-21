@@ -40,7 +40,7 @@ async def on_admin_command(self, message):
 		channel = message.channel
 
 	# Find if they exist
-	utils.db.cur.execute("SELECT id, discord FROM users WHERE steam=%s", (steam,))
+	utils.db.cur.execute("SELECT id, discord FROM users WHERE identifier=CONCAT('steam:', %s)", (steam,))
 
 	had_user = False
 
@@ -52,7 +52,7 @@ async def on_admin_command(self, message):
 			embed.add_field(name="Overriding", value=f"<@!{user[8:len(user)]}>")
 		
 		# Update the user
-		utils.db.cur.execute("UPDATE users SET priority=GREATEST(priority, 0), discord=%s WHERE steam=%s", (target.id, steam,))
+		utils.db.cur.execute("UPDATE users SET priority=GREATEST(priority, 0), discord=CONCAT('discord:', %s) WHERE identifier=CONCAT('steam:', %s)", (target.id, steam,))
 		utils.db.conn.commit()
 
 		had_user = True
@@ -74,7 +74,7 @@ async def on_admin_command(self, message):
 
 	# Add them to the whitelist
 	if not had_user:
-		utils.db.cur.execute("INSERT INTO users SET steam=%s, discord=%s", (steam, target.id,))
+		utils.db.cur.execute("INSERT INTO users SET identifier=CONCAT('steam:', %s), discord=CONCAT('discord:', %s)", (steam, target.id,))
 		utils.db.conn.commit()
 	
 	# Add role to target

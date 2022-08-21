@@ -192,20 +192,20 @@ class NonstopClient(discord.Client):
 			# 		await channel.send("{0}, the format is: unwhitelist <user/hex>".format(message.author.mention))
 			# 		return
 				
-			# 	selects = "id, identifier, discord"
+			# 	selects = "id, steam, discord"
 
 			# 	if not await utils.db.get_target(message.mentions, args[1], message, selects):
 			# 		return
 
 			# 	# Get the result
-			# 	for (id, identifier, user,) in utils.db.cur:
+			# 	for (id, steam, user,) in utils.db.cur:
 			# 		role = discord.utils.get(message.guild.roles, name="Whitelisted")
 
 			# 		# Find if they exist
-			# 		utils.db.cur.execute("UPDATE users SET priority=-128 WHERE identifier=CONCAT('steam:', %s)", (steam,))
+			# 		utils.db.cur.execute("UPDATE users SET priority=-128 WHERE steam=%s", (steam,))
 
 			# 		await message.delete()
-			# 		await channel.send(f"<@{user}> ({id}) has been unwhitelisted as {identifier}...")
+			# 		await channel.send(f"<@{user}> ({id}) has been unwhitelisted as {steam}...")
 
 			# 		return
 			if command == "warnings":
@@ -213,13 +213,13 @@ class NonstopClient(discord.Client):
 					await channel.send("{0}, the format is: warnings <user/hex> - gets the warnings from somebody".format(message.author.mention))
 					return
 				
-				selects = "id, identifier, discord, name"
+				selects = "id, steam, discord, name"
 
 				if not await utils.db.get_target(message.mentions, args[1], message, selects):
 					return
 
 				# Get the result
-				for (id, identifier, user, name,) in utils.db.cur:
+				for (id, steam, user, name,) in utils.db.cur:
 					embed = discord.Embed(title=f"{name}'s Warnings")
 					utils.db.cur.execute("SELECT id, points, info, DATE_FORMAT(time_stamp + INTERVAL 5 HOUR, '%H:%i %m/%e/%y UTC'), TIMESTAMPDIFF(DAY, CURRENT_TIMESTAMP(), time_stamp) AS 'expired' FROM `warnings` WHERE user_id=?", (id,))
 
@@ -238,7 +238,7 @@ class NonstopClient(discord.Client):
 
 					embed.description = f"{lessRecentPoints} points within 60 days\n{recentPoints} points within 30 days\n{totalPoints} total points"
 
-					await channel.send(f"<@!{user[8:len(user)]}> ({identifier})", embed=embed)
+					await channel.send(f"<@!{user}> (Steam: {steam})", embed=embed)
 
 					return
 			elif command == "warningadd":
@@ -246,7 +246,7 @@ class NonstopClient(discord.Client):
 					await channel.send("{0}, the format is: warningadd <user/hex> <points> <info> - add a warning".format(message.author.mention))
 					return
 				
-				selects = "id, identifier, discord, name"
+				selects = "id, steam, discord, name"
 				if not await utils.db.get_target(message.mentions, args[1], message, selects):
 					return
 
@@ -269,7 +269,7 @@ class NonstopClient(discord.Client):
 					return
 
 				# Get the result
-				for (id, identifier, user, name,) in utils.db.cur:
+				for (id, steam, user, name,) in utils.db.cur:
 					utils.db.cur.execute("INSERT INTO `warnings` SET user_id=?, points=?, info=?", (id, points, info,))
 					utils.db.conn.commit()
 
@@ -277,12 +277,12 @@ class NonstopClient(discord.Client):
 
 					insert_id = utils.db.cur.fetchone()[0]
 					
-					await channel.send(f"<@!{user[8:len(user)]}> ({identifier}) has been warned (id: {insert_id})!")
+					await channel.send(f"<@!{user}> ({steam}) has been warned (id: {insert_id})!")
 
 					embed = discord.Embed(title="Warning Added", description=info)
 					embed.add_field(name="ID", value=f"{insert_id}", inline=False)
 					embed.add_field(name="Warned By", value=f"{message.author.name}#{message.author.discriminator}", inline=False)
-					embed.add_field(name="Target", value=f"name:{name}\n{user}\n{identifier}", inline=False)
+					embed.add_field(name="Target", value=f"Name: {name}\nID: {id}\nSteam: {steam}", inline=False)
 					embed.add_field(name="Warning Points", value=points, inline=False)
 
 					await logChannel.send(embed=embed)
@@ -298,10 +298,10 @@ class NonstopClient(discord.Client):
 					await channel.send("{0}, the format is: warningrem <id> - remove a warning by id".format(message.author.mention))
 					return
 				
-				utils.db.cur.execute("SELECT id, user_id, (SELECT identifier FROM users WHERE user_id=id), DATE_FORMAT(time_stamp + INTERVAL 5 HOUR, '%H:%i %m/%e/%y UTC'), points, info FROM `warnings` WHERE id=?", (args[1],))
+				utils.db.cur.execute("SELECT id, user_id, (SELECT steam FROM users WHERE user_id=id), DATE_FORMAT(time_stamp + INTERVAL 5 HOUR, '%H:%i %m/%e/%y UTC'), points, info FROM `warnings` WHERE id=?", (args[1],))
 
 				# Get the result
-				for (id, user_id, identifier, time_stamp, points, info,) in utils.db.cur:
+				for (id, user_id, steam, time_stamp, points, info,) in utils.db.cur:
 					utils.db.cur.execute("DELETE FROM `warnings` WHERE id=?", (id,))
 					utils.db.conn.commit()
 					
@@ -310,7 +310,7 @@ class NonstopClient(discord.Client):
 					if points > 0:
 						embed = discord.Embed(title="Warning Removed")
 						embed.add_field(name="Removed By", value=f"{message.author.name}#{message.author.discriminator}", inline=False)
-						embed.add_field(name="User", value=f"id:{user_id}\n{identifier}", inline=False)
+						embed.add_field(name="User", value=f"ID: {user_id}\nSteam: {steam}", inline=False)
 						embed.add_field(name="Time Stamp", value=time_stamp, inline=False)
 						embed.add_field(name="Warning Points", value=points, inline=False)
 						embed.add_field(name="Info", value=info, inline=False)
@@ -324,7 +324,7 @@ class NonstopClient(discord.Client):
 				# 	await channel.send("{0}, the format is: warningedit <id> <points> <info> - edit a warning".format(message.author.mention))
 				# 	return
 				
-				# selects = "id, identifier, discord, name"
+				# selects = "id, steam, discord, name"
 				# if not await utils.db.get_target(message.mentions, args[1], message, selects):
 				return
 
@@ -337,11 +337,11 @@ class NonstopClient(discord.Client):
 				# info = (' ').join(args)
 
 				# # Get the result
-				# for (id, identifier, user, name,) in utils.db.cur:
+				# for (id, steam, user, name,) in utils.db.cur:
 				# 	utils.db.cur.execute("INSERT INTO `warnings` SET user_id=?, points=?, info=?", (id, points, info,))
 				# 	utils.db.conn.commit()
 					
-				# 	await channel.send(f"<@!{user[8:len(user)]}> ({identifier}) has been warned!")
+				# 	await channel.send(f"<@!{user}> ({steam}) has been warned!")
 
 				# 	return
 				return

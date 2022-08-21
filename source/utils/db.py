@@ -46,9 +46,9 @@ async def get_target(target, target_string, message, selects):
 		isUser = True
 
 	if isUser:
-		cur.execute("SELECT " + selects + " FROM users WHERE discord=CONCAT('discord:', %s)", (target.id,))
+		cur.execute("SELECT " + selects + " FROM users WHERE discord=%s", (target.id,))
 	else:
-		cur.execute("SELECT " + selects + " FROM users WHERE identifier=CONCAT('steam:', %s)", (target,))
+		cur.execute("SELECT " + selects + " FROM users WHERE steam=%s", (target,))
 
 	return True
 
