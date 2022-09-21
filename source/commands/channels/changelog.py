@@ -17,7 +17,7 @@ def get_timestamp():
 	datetime_object = datetime.datetime.strptime(str(date.month), "%m")
 	month_name = datetime_object.strftime("%B")
 	
-	return f"{month_name} {date.year} - Week {str(week_number)}"
+	return f"{month_name} {date.day}, {date.year}"
 
 def format_changelog(text):
 	formatted = ""
