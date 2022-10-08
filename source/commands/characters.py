@@ -39,10 +39,6 @@ async def on_admin_command(self, message):
 		# 	user_mention = "*Unknown*"
 		# else:
 		# 	user_mention = f"<@!{user[8:len(user)]}>"
-		if gender == b'\x00':
-			gender = "Female"
-		else:
-			gender = "Male"
 		
 		total_time_played = total_time_played + time_played
 
