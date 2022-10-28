@@ -9,7 +9,7 @@ async def on_admin_command(self, message):
 		await channel.send("{0}, the format is: describe <user/hex> - gets the identifiers of a Discord user or vise versa".format(message.author.mention))
 		return
 	
-	selects = "id, steam, name, discord, flags, priority"
+	selects = "id, steam, name, discord, flags, priority, first_joined, last_played"
 
 	if not await utils.db.get_target(message.mentions, args[1], message, selects):
 		return
@@ -25,6 +25,7 @@ async def on_admin_command(self, message):
 		embed.add_field(name="Name", value=name, inline=False)
 		embed.add_field(name="Flags", value=flags, inline=True)
 		embed.add_field(name="Priority", value=priority, inline=True)
+		embed.add_field(name="Stats", value=f"Last Played: {last_played}\nFirst Joined: {first_joined}", inline=False)
 
 		await message.delete()
 		await channel.send(embed=embed)
