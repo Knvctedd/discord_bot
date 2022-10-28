@@ -10,7 +10,6 @@ try:
 		port = secrets.conn_port,
 		database = secrets.conn_database
 	)
-	conn.auto_reconnect = True
 	dev_conn = mariadb.connect(
 		user = secrets.dev_conn_user,
 		password = secrets.dev_conn_password,
@@ -18,7 +17,6 @@ try:
 		port = secrets.dev_conn_port,
 		database = secrets.dev_conn_database
 	)
-	dev_conn.auto_reconnect = True
 except mariadb.Error as e:
 	print(f"Error connecting to MariaDB Platform: {e}")
 	sys.exit(1)
