@@ -14,7 +14,7 @@ async def on_admin_command(self, message):
 	if not await utils.db.get_target(message.mentions, args[1], message, selects):
 		return
 
-	for (id, identifier, name, user, flags, priority,) in utils.db.cur:
+	for (id, identifier, name, user, flags, priority, first_joined, last_played) in utils.db.cur:
 		user_mention = None
 		if user is None:
 			user_mention = "*Unknown*"
