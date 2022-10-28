@@ -25,7 +25,8 @@ async def on_admin_command(self, message):
 		embed.add_field(name="Name", value=name, inline=False)
 		embed.add_field(name="Flags", value=flags, inline=True)
 		embed.add_field(name="Priority", value=priority, inline=True)
-		embed.add_field(name="Stats", value=f"Last Played: {last_played}\nFirst Joined: {first_joined}", inline=False)
+		embed.add_field(name="Last Played", value=last_played, inline=False)
+		embed.add_field(name="First Played", value=first_joined, inline=False)
 
 		await message.delete()
 		await channel.send(embed=embed)
