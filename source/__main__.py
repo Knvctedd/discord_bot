@@ -100,7 +100,8 @@ async def invoke_command(command, target, self, message):
 		return False
 
 async def warn_op(channel):
-	await channel.send("Looks like Dad went to get milk and never came back. Alright, get on it <@!185826398605279233> (or big heads <@!100054686995865600> and <@!677247342570897418>)!")
+	await channel.send("Error detected, restarting bot!")
+	quit()
 
 # Discord client
 class NonstopClient(discord.Client):
