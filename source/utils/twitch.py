@@ -30,7 +30,7 @@ async def update_streamer_role(self, user, guild):
 			await user.remove_roles(role, reason="Stoped streaming")
 	elif role not in user.roles:
 		await user.add_roles(role, reason="Started streaming")
-		streamsChannel = discord.utils.get(guild.channels, name="nonstop-streams")
+		streamsChannel = discord.utils.get(guild.channels, name="🎥│live-streams")
 		now = datetime.now()
 		if not streamsChannel is None and (shoutouts.get(user.id) is None or now > shoutouts.get(user.id) + timedelta(hours=6)):
 			shoutouts[user.id] = now
