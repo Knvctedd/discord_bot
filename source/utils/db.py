@@ -27,7 +27,6 @@ cur = conn.cursor()
 dev_cur = dev_conn.cursor()
 
 async def get_target(target, target_string, message, selects):
-	conn.ping()
 	isUser = False
 	
 	# Get user
@@ -56,7 +55,6 @@ async def get_target(target, target_string, message, selects):
 	return True
 
 async def dev_get_target(target, target_string, message, selects):
-	dev_conn.ping()
 	isUser = False
 	
 	# Get user
